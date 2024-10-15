@@ -4,7 +4,7 @@ import com.altinay.laboratuvar.Entity.Rapor;
 import com.altinay.laboratuvar.Repository.RaporRepository;
 import org.springframework.http.HttpStatus;
 import java.util.List;
-
+import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +25,50 @@ public class RaporController{
         return raporRepository.save(rapor);
     }
 
-    @GetMapping("hastaAd")
-    public ResponseEntity<List<Rapor>> listeleByHastaAdi(){
-        return null;
+    @GetMapping("/listele/hastaAdSoyad")
+    public ResponseEntity<List<Rapor>> listeleByHastaAdi(@RequestParam String hastaAdi , @RequestParam String hastaSoyad){
+        List<Rapor> raporlar = raporRepository.findByhastaAdAndHastaSoyad(hastaAdi,hastaSoyad);
+        return ResponseEntity.ok(raporlar);
+    }
+
+    @GetMapping("/listele/hastaTc")
+    public ResponseEntity<List<Rapor>> listeleByHastaTc(@RequestParam String hastaTc){
+        List<Rapor> raporlar = raporRepository.findByTc(hastaTc);
+        return ResponseEntity.ok(raporlar);
+    }
+
+    @GetMapping("/listele/laborantAdSoyad")
+    public ResponseEntity<List<Rapor>> listeleByLaborantAdSoyad(@RequestParam String laborantAd , @RequestParam String laborantSoyad){
+        List<Rapor> raporlar = raporRepository.findByLaborantAdAndSoyad(laborantAd , laborantSoyad);
+        return ResponseEntity.ok(raporlar);
+    }
+
+    /*
+    @PutMapping("/guncelleRapor")
+    public ResponseEntity<Rapor> guncelleRapor(@RequestBody Rapor yRapor , @RequestParam Integer raporId){
+        Optional<Rapor> rapor = raporRepository.findById(raporId);
+
+        if(rapor.isPresent()){
+               Rapor Rapor = rapor.get();
+               Rapor.setLaborant(yRapor.getLaborant());
+               Rapor.setDosyaNumarasi(yRapor.getDosyaNumarasi());
+               Rapor.setTani(yRapor.getTani());
+               Rapor.setHastaAd(yRapor.getHastaAd());
+               Rapor.setHastaSoyad(yRapor.getHastaSoyad());
+               Rapor.setTc(yRapor.getTc());
+               Rapor.setTaniDetay(yRapor.getTaniDetay());
+
+        }*/
+
+    @GetMapping("/listele")
+    public ResponseEntity<List<Rapor>> tumRaporlariListele(){
+        List<Rapor> raporlar = raporRepository.findAll();
+        return ResponseEntity.ok(raporlar);
+    }
+
+    @DeleteMapping("/sil")
+    @ResponseStatus(HttpStatus.OK)
+    public void raporSil(@RequestParam Integer raporId){
+        raporRepository.deleteById(raporId);
     }
 }

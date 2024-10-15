@@ -22,8 +22,9 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/kayitOl").permitAll()
-                        .requestMatchers("/rapor/**").hasRole("USER")
+                        .requestMatchers("/kayitOl").anonymous()
+                        .requestMatchers("/rapor/sil").hasRole("ADMIN")
+                        .requestMatchers("/rapor/**").hasAnyRole("ADMIN" , "USER")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())

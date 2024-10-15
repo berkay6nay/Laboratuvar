@@ -26,14 +26,16 @@ public class Laborant implements UserDetails {
     private String soyad;
 
     @Column(unique = true)
-    @Digits(fraction = 0 , integer = 10)
+    @Digits(fraction = 0 , integer = 10 , message = "Hastane kimlik numarası 10 haneden oluşmalı.")
     private String hastaneKimlikNo;
 
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
     private String password;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + rol));
     }
 
     @Override
