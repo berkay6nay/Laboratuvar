@@ -2,7 +2,11 @@ package com.altinay.laboratuvar.Controller;
 import com.altinay.laboratuvar.Entity.Laborant;
 import com.altinay.laboratuvar.Entity.Rapor;
 import com.altinay.laboratuvar.Repository.RaporRepository;
+import com.altinay.laboratuvar.Service.ResimService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
@@ -13,15 +17,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/rapor")
 public class RaporController{
     private final RaporRepository raporRepository;
+    private final ResimService resimService;
 
-    public RaporController(RaporRepository raporRepository) {
+    public RaporController(RaporRepository raporRepository , ResimService resimService) {
         this.raporRepository = raporRepository;
+        this.resimService = resimService;
     }
 
     @PostMapping("/tanimla")
     @ResponseStatus(HttpStatus.CREATED)
     public Rapor raporTanimla(@RequestBody Rapor rapor, @AuthenticationPrincipal Laborant laborant){
         rapor.setLaborant(laborant);
+        byte[] resim = resimService.resimYarat(rapor);
+        rapor.setResim(resim);
         return raporRepository.save(rapor);
     }
 
@@ -70,5 +78,15 @@ public class RaporController{
     @ResponseStatus(HttpStatus.OK)
     public void raporSil(@RequestParam Integer raporId){
         raporRepository.deleteById(raporId);
+    }
+
+    @GetMapping("/resim")
+    public ResponseEntity<byte[]> raporResimSorgula(@RequestParam Integer raporId){
+        Optional<Rapor> rapor = raporRepository.findById(raporId);
+        if(rapor.isPresent()){
+            System.out.println(Arrays.toString(rapor.get().getResim()));
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE , "image/png").body(rapor.get().getResim());
+        }
+        else return null;
     }
 }

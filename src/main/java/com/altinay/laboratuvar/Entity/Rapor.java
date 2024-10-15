@@ -29,6 +29,8 @@ public class Rapor {
     private Date verildigiTarih = new Date();
 
     //.png,jpg gelecek
+    @Lob
+    private byte[] resim;
 
     @ManyToOne
     private Laborant laborant;
