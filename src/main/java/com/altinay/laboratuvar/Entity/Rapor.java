@@ -34,4 +34,6 @@ public class Rapor {
 
     @ManyToOne
     private Laborant laborant;
+
+
 }

@@ -5,8 +5,6 @@ import com.altinay.laboratuvar.Repository.RaporRepository;
 import com.altinay.laboratuvar.Service.ResimService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
@@ -75,18 +73,21 @@ public class RaporController{
     }
 
     @DeleteMapping("/sil")
-    @ResponseStatus(HttpStatus.OK)
-    public void raporSil(@RequestParam Integer raporId){
-        raporRepository.deleteById(raporId);
+    public ResponseEntity<String> raporSil(@RequestParam Integer raporId){
+        Optional<Rapor> rapor = raporRepository.findById(raporId);
+        if(rapor.isPresent()){
+            raporRepository.delete(rapor.get());
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/resim")
     public ResponseEntity<byte[]> raporResimSorgula(@RequestParam Integer raporId){
         Optional<Rapor> rapor = raporRepository.findById(raporId);
         if(rapor.isPresent()){
-            System.out.println(Arrays.toString(rapor.get().getResim()));
             return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE , "image/png").body(rapor.get().getResim());
         }
-        else return null;
+        else return ResponseEntity.notFound().build();
     }
 }
