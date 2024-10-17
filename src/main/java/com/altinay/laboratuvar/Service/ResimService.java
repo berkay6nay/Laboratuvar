@@ -23,6 +23,7 @@ public class ResimService {
             g.drawString("Laborant Ad: " + rapor.getLaborant().getAd() , 20 , 140);
             g.drawString("Laborant Soyad: " + rapor.getLaborant().getSoyad() , 20 , 160);
             g.drawString("Laborant Hastane No: " + rapor.getLaborant().getHastaneKimlikNo() , 20 , 180);
+            g.drawString("Rapor Id: " + rapor.getId() , 20 , 200);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(resim, "png" , baos);
