@@ -3,12 +3,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.validation.constraints.Digits;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,7 +23,6 @@ public class Laborant implements UserDetails {
     private String soyad;
 
     @Column(unique = true)
-    @Digits(fraction = 0 , integer = 10 , message = "Hastane kimlik numarası 10 haneden oluşmalı.")
     private String hastaneKimlikNo;
 
     @Enumerated(EnumType.STRING)

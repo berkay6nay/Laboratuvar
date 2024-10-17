@@ -2,7 +2,6 @@ package com.altinay.laboratuvar.Controller;
 import com.altinay.laboratuvar.Entity.KayitForm;
 import com.altinay.laboratuvar.Entity.Laborant;
 import com.altinay.laboratuvar.Repository.LaborantRepository;
-import org.apache.coyote.Response;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +31,9 @@ public class KayitController {
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Bu hastane numarası ile halihazırda kayıt mevcut.");
         }
+            catch (IllegalArgumentException e){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Kayıt sırasında bir hata oluştu");
         }

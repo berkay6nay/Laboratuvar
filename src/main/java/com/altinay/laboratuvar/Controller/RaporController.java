@@ -21,7 +21,6 @@ public class RaporController{
         this.raporRepository = raporRepository;
         this.resimService = resimService;
     }
-
     @PostMapping("/tanimla")
     @ResponseStatus(HttpStatus.CREATED)
     public Rapor raporTanimla(@RequestBody Rapor rapor, @AuthenticationPrincipal Laborant laborant){
@@ -30,41 +29,45 @@ public class RaporController{
         rapor.setResim(resim);
         return raporRepository.save(rapor);
     }
-
-    @GetMapping("/listele/hastaAdSoyad")
-    public ResponseEntity<List<Rapor>> listeleByHastaAdi(@RequestParam String hastaAdi , @RequestParam String hastaSoyad){
+    @GetMapping("/listele/hastaAdSoyad/{hastaAdi}/{hastaSoyad}")
+    public ResponseEntity<List<Rapor>> listeleByHastaAdi(@PathVariable String hastaAdi , @PathVariable String hastaSoyad){
         List<Rapor> raporlar = raporRepository.findByhastaAdAndHastaSoyad(hastaAdi,hastaSoyad);
         return ResponseEntity.ok(raporlar);
     }
-
-    @GetMapping("/listele/hastaTc")
-    public ResponseEntity<List<Rapor>> listeleByHastaTc(@RequestParam String hastaTc){
+    @GetMapping("/listele/hastaTc/{hastaTc}")
+    public ResponseEntity<List<Rapor>> listeleByHastaTc(@PathVariable String hastaTc){
         List<Rapor> raporlar = raporRepository.findByTc(hastaTc);
         return ResponseEntity.ok(raporlar);
     }
-
-    @GetMapping("/listele/laborantAdSoyad")
-    public ResponseEntity<List<Rapor>> listeleByLaborantAdSoyad(@RequestParam String laborantAd , @RequestParam String laborantSoyad){
+    @GetMapping("/listele/laborantAdSoyad/{laborantAd}/{laborantSoyad}")
+    public ResponseEntity<List<Rapor>> listeleByLaborantAdSoyad(@PathVariable String laborantAd , @PathVariable String laborantSoyad){
         List<Rapor> raporlar = raporRepository.findByLaborantAdAndSoyad(laborantAd , laborantSoyad);
         return ResponseEntity.ok(raporlar);
     }
-
-    /*
-    @PutMapping("/guncelleRapor")
-    public ResponseEntity<Rapor> guncelleRapor(@RequestBody Rapor yRapor , @RequestParam Integer raporId){
+    @PutMapping("/guncelleRapor/{raporId}")
+    public ResponseEntity<Rapor> guncelleRapor(@RequestBody Rapor yRapor , @PathVariable Integer raporId , @AuthenticationPrincipal Laborant laborant){
         Optional<Rapor> rapor = raporRepository.findById(raporId);
-
         if(rapor.isPresent()){
-               Rapor Rapor = rapor.get();
-               Rapor.setLaborant(yRapor.getLaborant());
-               Rapor.setDosyaNumarasi(yRapor.getDosyaNumarasi());
-               Rapor.setTani(yRapor.getTani());
-               Rapor.setHastaAd(yRapor.getHastaAd());
-               Rapor.setHastaSoyad(yRapor.getHastaSoyad());
-               Rapor.setTc(yRapor.getTc());
-               Rapor.setTaniDetay(yRapor.getTaniDetay());
-
-        }*/
+            if (rapor.get().getLaborant().getId().equals(laborant.getId()) ) {
+                Rapor Rapor = rapor.get();
+                Rapor.setLaborant(yRapor.getLaborant());
+                Rapor.setDosyaNumarasi(yRapor.getDosyaNumarasi());
+                Rapor.setTani(yRapor.getTani());
+                Rapor.setHastaAd(yRapor.getHastaAd());
+                Rapor.setHastaSoyad(yRapor.getHastaSoyad());
+                Rapor.setTc(yRapor.getTc());
+                Rapor.setTaniDetay(yRapor.getTaniDetay());
+                Rapor.setVerildigiTarih(yRapor.getVerildigiTarih());
+                Rapor.setLaborant(laborant);
+                byte[] yeniResim = resimService.resimYarat(Rapor);
+                Rapor.setResim(yeniResim);
+                raporRepository.save(Rapor);
+                return ResponseEntity.ok(Rapor);
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 
     @GetMapping("/listele")
     public ResponseEntity<List<Rapor>> tumRaporlariListele(){
@@ -72,8 +75,8 @@ public class RaporController{
         return ResponseEntity.ok(raporlar);
     }
 
-    @DeleteMapping("/sil")
-    public ResponseEntity<String> raporSil(@RequestParam Integer raporId){
+    @DeleteMapping("/sil/{raporId}")
+    public ResponseEntity<String> raporSil(@PathVariable Integer raporId){
         Optional<Rapor> rapor = raporRepository.findById(raporId);
         if(rapor.isPresent()){
             raporRepository.delete(rapor.get());
@@ -81,13 +84,24 @@ public class RaporController{
         }
         return ResponseEntity.notFound().build();
     }
-
-    @GetMapping("/resim")
-    public ResponseEntity<byte[]> raporResimSorgula(@RequestParam Integer raporId){
+    @GetMapping("/resim/{raporId}")
+    public ResponseEntity<byte[]> raporResimSorgula(@PathVariable Integer raporId){
         Optional<Rapor> rapor = raporRepository.findById(raporId);
         if(rapor.isPresent()){
             return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE , "image/png").body(rapor.get().getResim());
         }
         else return ResponseEntity.notFound().build();
+    }
+    @GetMapping("/listeleEnYeni")
+    public ResponseEntity<List<Rapor>> listeleEnYeni(){
+        List<Rapor> raporlar = raporRepository.findAll();
+        raporlar.sort((a,b) -> a.getVerildigiTarih().compareTo(b.getVerildigiTarih()));
+        return ResponseEntity.ok(raporlar);
+    }
+    @GetMapping("/listeleEnEski")
+    public ResponseEntity<List<Rapor>> listeleEnEski(){
+        List<Rapor> raporlar = raporRepository.findAll();
+        raporlar.sort((a,b) -> b.getVerildigiTarih().compareTo(a.getVerildigiTarih()));
+        return ResponseEntity.ok(raporlar);
     }
 }

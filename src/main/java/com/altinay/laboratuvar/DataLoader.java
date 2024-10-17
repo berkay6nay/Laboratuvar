@@ -1,5 +1,4 @@
 package com.altinay.laboratuvar;
-
 import com.altinay.laboratuvar.Entity.Laborant;
 import com.altinay.laboratuvar.Entity.Rol;
 import com.altinay.laboratuvar.Repository.LaborantRepository;
@@ -37,6 +36,5 @@ public class DataLoader implements CommandLineRunner {
 
         laborantRepository.save(laborant);
         laborantRepository.save(laborant2);
-
     }
 }

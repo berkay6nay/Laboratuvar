@@ -23,12 +23,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/kayitOl").anonymous()
-                        .requestMatchers("/rapor/sil").hasRole("ADMIN")
+                        .requestMatchers("/rapor/sil/**").hasRole("ADMIN")
                         .requestMatchers("/rapor/**").hasAnyRole("ADMIN" , "USER")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .build();
     }
-
 }

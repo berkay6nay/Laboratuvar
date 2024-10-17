@@ -1,7 +1,6 @@
 package com.altinay.laboratuvar.Service;
 import com.altinay.laboratuvar.Entity.Rapor;
 import org.springframework.stereotype.Service;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -29,11 +28,9 @@ public class ResimService {
             ImageIO.write(resim, "png" , baos);
             return baos.toByteArray();
         }
-
         catch(Exception e){
             e.printStackTrace();
             return null;
         }
-
     }
 }

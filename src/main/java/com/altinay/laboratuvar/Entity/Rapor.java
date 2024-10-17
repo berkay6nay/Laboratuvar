@@ -3,7 +3,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.Date;
 
 @Data
@@ -28,12 +27,10 @@ public class Rapor {
 
     private Date verildigiTarih = new Date();
 
-    //.png,jpg gelecek
     @Lob
     private byte[] resim;
 
     @ManyToOne
     private Laborant laborant;
-
 
 }
