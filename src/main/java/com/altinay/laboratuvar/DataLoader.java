@@ -23,7 +23,7 @@ public class DataLoader implements CommandLineRunner {
         Laborant laborant = new Laborant();
         laborant.setAd("Ahmet");
         laborant.setSoyad("Yılmaz");
-        laborant.setHastaneKimlikNo("12565753");
+        laborant.setHastaneKimlikNo("5212565753");
         laborant.setPassword(passwordEncoder.encode("password"));
         laborant.setRol(Rol.USER);
 

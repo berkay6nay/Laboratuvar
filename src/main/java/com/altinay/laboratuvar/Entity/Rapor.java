@@ -3,6 +3,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
@@ -21,6 +23,7 @@ public class Rapor {
 
     private String tc;
 
+    @NotNull
     private String tani;
 
     private String taniDetay;

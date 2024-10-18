@@ -3,14 +3,9 @@ import com.altinay.laboratuvar.Entity.Laborant;
 import com.altinay.laboratuvar.Entity.Rapor;
 import com.altinay.laboratuvar.Entity.RaporResponse;
 import com.altinay.laboratuvar.Repository.RaporRepository;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class RaporService {
@@ -47,7 +42,7 @@ public class RaporService {
         return raporRepository.findByLaborantAdAndSoyad(laborantAd, laborantSoyad).stream().map(raporMapper::toRaporResponse).toList();
     }
 
-    public ResponseEntity<RaporResponse> guncelleRapor(Rapor yRapor, Integer raporId, Laborant laborant) {
+    public RaporResponse guncelleRapor(Rapor yRapor, Integer raporId, Laborant laborant) {
         Optional<Rapor> rapor = raporRepository.findById(raporId);
         if (rapor.isPresent()) {
             if (rapor.get().getLaborant().getId().equals(laborant.getId())) {
@@ -64,27 +59,26 @@ public class RaporService {
                 byte[] yeniResim = resimService.resimYarat(Rapor);
                 Rapor.setResim(yeniResim);
                 raporRepository.save(Rapor);
-                return ResponseEntity.ok(raporMapper.toRaporResponse(Rapor));
+                return raporMapper.toRaporResponse(Rapor);
             }
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.notFound().build();
+        return null;
     }
 
-    public ResponseEntity<String> raporSil(Integer raporId){
+    public String raporSil(Integer raporId){
         Optional<Rapor> rapor = raporRepository.findById(raporId);
         if(rapor.isPresent()){
             raporRepository.delete(rapor.get());
-            return ResponseEntity.ok("Rapor başarı ile silindi");
+            return "Rapor başarı ile silindi";
         }
-        return ResponseEntity.notFound().build();
+        return null;
     }
-    public ResponseEntity<byte[]> raporResimSorgula(Integer raporId){
+    public byte[] raporResimSorgula(Integer raporId){
         Optional<Rapor> rapor = raporRepository.findById(raporId);
         if(rapor.isPresent()){
-            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE , "image/png").body(rapor.get().getResim());
+            return rapor.get().getResim();
         }
-        else return ResponseEntity.notFound().build();
+        else return null;
     }
 
     public List<RaporResponse> listeleEnYeni(){
@@ -101,5 +95,10 @@ public class RaporService {
     public List<RaporResponse> tumRaporlarListele(){
         List<Rapor> raporlar = raporRepository.findAll();
         return raporlar.stream().map(raporMapper::toRaporResponse).toList();
+    }
+
+    public RaporResponse raporSorgula(Integer id){
+        Optional<Rapor> rapor = raporRepository.findById(id);
+        return rapor.map(raporMapper::toRaporResponse).orElse(null);
     }
 }
