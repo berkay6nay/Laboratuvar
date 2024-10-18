@@ -116,7 +116,7 @@ Bunun için Postman uygulamasında Authorization sekmesinde Basic Auth seçeneğ
 
 #### Resim Sorgulama
 **rapor/resim/{raporId}** Bu endpoint ile belli bir rapor için oluşturulmuş görseli sorgulayabilirsiniz. Örnek:
->**rapor/resim/1**
+>**GET rapor/resim/1**
 
 #### Tarihe Göre Listeleme
 >**rapor/listeleEnYeni rapor/listele/EnEski** Bu endpointler ile raporları tarihlerine göre listeyebilirsiniz.
